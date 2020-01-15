@@ -1,0 +1,9 @@
+{
+	"dbhost":"localhost",
+	"port":5432,
+	"dnname":"odsschema",
+	"uid":"maerskapp",
+	"password":"cnp4test",
+	"timeout": 10
+
+}

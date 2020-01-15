@@ -1,0 +1,398 @@
+openapi: '3.0.2'
+info:
+  title: Daily Star HR module service API sepcification
+  version: '1.0'
+servers:
+  - url: https://localhost:7070/
+    description: Local server
+  - url: http://150.107.50.59:7070
+    description: SIT server
+paths:
+  /:
+    get:
+      description: Returns the server status
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIResponse"
+  /api/refdata:
+    put:
+      description: Add a set of new ReferenceDataRecord in the system
+      requestBody:
+        content:
+           application/json:
+            schema:
+               type: array
+               items:
+                  $ref: "#/components/schemas/ReferenceDataRecord"
+      responses:
+        '200':
+          description: ReferenceDataRecord creation result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIResponse"
+    post:
+      description: 
+         Modifies a set of new ReferenceDataRecord in the system. 
+         Category and value is considered as key for update. 
+         Setting display order to -1 removes it from searching
+      requestBody:
+        content:
+           application/json:
+            schema:
+               type: array
+               items:
+                  $ref: "#/components/schemas/ReferenceDataRecord"
+      responses:
+        '200':
+          description: ReferenceDataRecord modification result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIResponse"
+    delete:
+      description: 
+         Delets a set of new ReferenceDataRecord in the system. 
+         Category and value is considered as key for deletion. 
+         
+      requestBody:
+        content:
+           application/json:
+            schema:
+               type: array
+               items:
+                  $ref: "#/components/schemas/ReferenceDataRecord"
+      responses:
+        '200':
+          description: ReferenceDataRecord deletion result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIResponse"
+
+  /api/refdata/{categorylist}:
+    get: 
+      description: 
+         Returns all ReferenceDataRecord records based on input category list
+      parameters:
+        - name: categorylist
+          in: path
+          required: true
+          description: categorylist separated by command ( must of URL encoded)
+          schema:
+            type: string
+      responses:
+        '200':
+           description: 
+                Returns ReferenceDataRecord records grouped by category
+           content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIResponse"
+
+  /api/employee/geninfo:
+    put:
+      description: Creates a new EmployeeGeneralInfo. 
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmployeeGeneralInfo"
+      responses:
+        '200':
+          description: Employee creation result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIResponse"
+    post:
+      description: Updates an existing EmployeeGeneralInfo
+      requestBody:
+        content:
+          application/json:
+           schema:
+             $ref: "#/components/schemas/EmployeeGeneralInfo"
+      responses:
+        '200':
+           description: Employee updation result
+           content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIResponse"
+  /api/employee/geninfo/{empcode}:
+    get: 
+      description: 
+         Returns all EmployeeGeneralInfo records or a single EmployeeGeneralInfo 
+         based on the input empcode
+      parameters:
+        - name: empcode
+          in: path
+          required: true
+          description: Employee ID or *
+          schema:
+            type: string
+      responses:
+        '200':
+           description: 
+                Returns all employees ( if empcode is * )
+                else returns one EmployeeGeneralInfo record
+           content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIResponse"
+
+  /api/employee/extninfo/{extnInfoType}:
+    put:
+      description: Add/Modify employee extended info. 
+      parameters:
+        - name: extnInfoType
+          in: path
+          required: true
+          description: Type of extended information to save/modify
+          schema:
+            type: string
+            enum:
+            - contactinfo  
+            - familyinfo  
+            - educationinfo  
+            - referencesinfo  
+            - traininginfo  
+            - awardinfo  
+            - profqualificationinfo  
+            - publicationinfo  
+            - scholarshipinfo  
+            - nominationinfo  
+            - experienceinfo  
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmployeeExtnInfo"
+      responses:
+        '200':
+          description: Employee creation result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIResponse"
+    post:
+      description: Retrieve employee extended info. 
+      parameters:
+        - name: extnInfoType
+          in: path
+          required: true
+          description: Type of extended information to save/modify
+          schema:
+            type: string
+            enum:
+            - contactinfo  
+            - familyinfo  
+            - educationinfo  
+            - referencesinfo  
+            - traininginfo  
+            - awardinfo  
+            - profqualificationinfo  
+            - publicationinfo  
+            - scholarshipinfo  
+            - nominationinfo  
+            - experienceinfo  
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                empcode:
+                  type: string
+                  description: Employee code for retrieval of employee extended info
+      responses:
+        '200':
+          description: Employee Extended information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIResponse"
+                
+components:
+  schemas:
+    APIResponse:
+      type: object
+      properties:
+        serviceMessage:
+          type: string
+          description: Message set by the service
+        payload:
+          type: object
+          description: Could be a array objects or an object returned as API response
+        ts:
+          type: string
+          description: Server time stamp
+        isSuccess:
+          type: boolean
+          description: True if the service call is successful, false otherwise  
+    ReferenceDataRecord:
+      type: object
+      description: Reference data record for various look ups and drop downs
+      properties:
+       category:
+         type: string
+         description: Category of the reference data
+       value:
+         type: string
+         description: Internal that is stored as a result of selecting a dropdown
+       diplaytext:
+         type: string
+         description: String that is displayed on the screen 
+       displayorder:
+         type: integer
+         description: Display order. -1 means not displayed/inactive
+       extrainfo:
+         type: object
+         description: An optional arbirary json to hold extra information.  
+      required:
+      - category
+      - value
+
+    EmployeeGeneralInfo:
+      type: object
+      description: Emplotyee General Info
+      properties:
+        id:
+          type: string
+          description: Internal id. Please ignore
+        empcode:
+           type: string
+           description: Employee code.
+        empname:
+           type: string
+        lastname:
+           type: string
+        shortname:
+           type: string
+        fname:
+           type: string
+        fatheroccupation:
+           type: string
+        mname:
+           type: string
+        motheroccupation:
+           type: string
+        wifename:
+           type: string
+        email:
+           type: string
+        nationality:
+           type: string
+        weight:
+           type: string
+        height:
+           type: string
+        gender:
+           type: string
+        dob:
+           type: string
+           format: "yyyy-mm-dd"
+        nationalid:
+           type: string
+        tinno:
+           type: string
+        religion:
+           type: string
+        meritalstatus:
+           type: string
+        pasportno:
+           type: string
+        bloodgroup:
+           type: string
+        remarks:
+           type: string
+        companyid:
+           type: string
+        gradevalue:
+           type: string
+        gradeid:
+           type: string
+        status:
+           type: string
+        originalbirthdate:
+           type: string
+           format: "yyyy-mm-dd"
+        cardid:
+           type: string
+        active:
+           type: string
+        passportexpaireddate:
+           type: string
+        title:
+           type: string
+        suffix:
+           type: string
+        child:
+           type: string
+        passportissuedate:
+           type: string
+      required:
+        - empcode
+    EmployeeExtnInfo:
+      type: object
+      properties:
+        empcode:
+            type: string
+        contactinfo:
+            type: array
+            items:
+               type: object
+            description: "Contact information"
+        familyinfo:
+            type: array
+            items:
+               type: object
+            description: "Family information "
+        educationinfo:
+            type: array
+            items:
+               type: object
+            description: "Employee education information"
+        referencesinfo:
+            type: array
+            items:
+               type: object
+            description: "Reference information"
+        traininginfo:
+            type: array
+            items:
+               type: object
+            description: "Training information"
+        awardinfo:
+            type: array
+            items:
+               type: object
+            description: "Award information"
+        profqualificationinfo:
+            type: array
+            items:
+               type: object
+            description: "Profestional qualification information"
+        publicationinfo:
+            type: array
+            items:
+               type: object
+            description: "Employee publication information"
+        scholarshipinfo:
+            type: array
+            items:
+               type: object
+            description: "Employee scolarship information"
+        nominationinfo:
+            type: array
+            items:
+               type: object
+            description: "Employee nomination information"    
+      required:
+        - empcode    
+
+    

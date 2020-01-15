@@ -1,0 +1,31 @@
+version: '3.1'
+
+services: 
+  postgres:
+    image: postgres:12.1-alpine
+    container_name: pgsql
+    environment: 
+      POSTGRES_PASSWORD: admin
+    volumes: 
+      - ./initscripts/:/docker-entrypoint-initdb.d/  
+    ports:
+     - 5432:5432  
+  pgadmin:
+    image: dpage/pgadmin4:4.16
+    container_name: pgadmin
+    environment: 
+    - PGADMIN_DEFAULT_EMAIL=pgadmin4@pgadmin.org
+    - PGADMIN_DEFAULT_PASSWORD=admin
+    volumes: 
+    - ./localconnection.json:/pgadmin4/servers.json
+    ports:
+    - 8080:80
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    container_name: "swagger-ui"
+    ports:
+      - "8082:8080"
+    volumes:
+      - ./api-spec.yml:/api-spec.yml
+    environment:
+      SWAGGER_JSON: /api-spec.yml

@@ -1,0 +1,30 @@
+{
+	"vessel":	"MARY MAERSK",
+	"callSign":	"OWJE2",
+	"voyage":	"948W",
+	"carrier":	"MAE",
+	"operation":	"",
+	"creationDate"	:"19-12-2019 06:14",
+	"containerDetails":[
+	  {
+		"row": 1,
+		"containerNo": "SUDU8130838",
+		"isoCode": 4532,
+		"fe": "Full",
+		"partner": "MAE",
+		"weight": "",
+		"loadPort": "CNNGB",
+		"dschPort": "PLGDN",
+		"dlvyPort": "PLGDN",
+		"otherLOCs": "",
+		"dGHzdNo": "",
+		"dgUNNo": "",
+		"dGRegulation": "",
+		"dGPackageDgLevel": "",
+		"rfTemp": "",
+		"stowageCell": "0020012",
+		"specialInstruction": "VIP",
+		"dimensionsInfo": ""
+	  }
+	]
+	}
